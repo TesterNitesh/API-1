@@ -1,0 +1,22 @@
+*** Settings ***
+Library    RequestsLibrary
+Library    Collections
+
+*** Variables ***
+${base_url}=   https://automationexercise.com
+
+*** Test Cases ***
+PUTToAllBrandsList
+    create session  session1    ${base_url}
+    ${BODY}=    create dictionary      "product":"top" ,  "product":"tshirt"
+    ${header}=  create dictionary   Content-Type=text/html; charset=utf-8
+    ${responce}=    put request  session1  /api/brandsList   data=${BODY}    headers=${header}
+
+    log to console  ${responce.status_code}
+    log to console  ${responce.content}
+
+    ${status_code}=    convert to string  ${responce.status_code}
+    should be equal  ${status_code}     405
+
+    ${responce_body}=   convert to string  ${responce.content}
+    should contain   ${responce_body}   This request method is not supported.

@@ -1,0 +1,17 @@
+*** Settings ***
+Library    RequestsLibrary
+Library    Collections
+
+*** Variables ***
+${base_url}=   https://automationexercise.com
+
+*** Test Cases ***
+DELETEToVerifyLogin
+    create session  session1    ${base_url}
+    ${responce}=    delete request  session1       /api/productsList/1
+
+    ${status_code}=    convert to string  ${responce.status_code}
+    should be equal  ${status_code}     405
+
+    ${responce_body}=   convert to string  ${responce.content}
+    should contain   ${responce_body}   This request method is not supported.

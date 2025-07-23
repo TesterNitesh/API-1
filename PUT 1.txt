@@ -1,0 +1,22 @@
+*** Settings ***
+Library    RequestsLibrary
+Library    Collections
+V
+*** Variables ***
+${base_url}=   https://automationexercise.com7
+
+*** Test Cases ***
+PUTMETHODToUpdateUserAccount
+    create session  session1    ${base_url}
+    ${BODY}=    create dictionary   name:abc   email:abc@gmail.com   password:abc123   title:mr
+    ${header}=  create dictionary   Content-Type=text/html; charset=utf-8
+    ${responce}=    put request  session1  api/updateAccount   data=${BODY}    headers=${header}
+
+    log to console  ${responce.status_code}
+    log to console  ${responce.content}
+
+    ${status_code}=    convert to string  ${responce.status_code}
+    should be equal  ${status_code}     200
+
+    ${responce_body}=   convert to string  ${responce.content}
+    should contain   ${responce_body}    User updated!

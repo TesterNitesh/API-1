@@ -1,0 +1,32 @@
+*** Settings ***
+Library      RequestsLibrary
+Library     Collections
+
+*** Variables ***
+${base_url}     https://automationexercise.com
+
+*** Test Cases ***
+Get All Products List
+    create session  session1    ${base_url}
+    ${responce}=    get request  session1   api/productsList
+
+    log to console  ${responce.status_code}
+    log to console  ${responce.content}
+    log to console  ${responce.headers}
+
+
+    #Validations
+    ${status_code}=     convert to string   ${responce.status_code}
+    should be equal  ${status_code}        200
+
+     ${body}=   convert to string    ${responce.content}
+     should contain     ${body}     "products"
+
+     ${contentTypeValue}=   get from dictionary    ${responce.headers}    Content-Type
+     should be equal     ${contentTypeValue}        text/html; charset=utf-8
+
+
+
+
+
+

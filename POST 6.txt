@@ -1,0 +1,22 @@
+*** Settings ***
+Library    RequestsLibrary
+Library    Collections
+
+*** Variables ***
+${base_url}=   https://automationexercise.com
+
+*** Test Cases ***
+POSTToVerifyLoginwithvaliddetails
+    create session  session1    ${base_url}
+    ${BODY}=    create dictionary   "responseCode": 400, "message": "Bad request, email or password parameter is missing in POST request."
+    ${header}=  create dictionary   Content-Type=text/html; charset=utf-8
+    ${responce}=    post request  session1  api/verifyLogin   data=${BODY}    headers=${header}
+
+    log to console  ${responce.status_code}
+    log to console  ${responce.content}
+
+    ${status_code}=    convert to string  ${responce.status_code}
+    should be equal  ${status_code}     200
+
+    ${responce_body}=   convert to string  ${responce.content}
+    should contain   ${responce_body}   User exists!

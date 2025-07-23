@@ -1,0 +1,28 @@
+*** Settings ***
+Library     SeleniumLibrary
+Library     RequestsLibrary
+Library     JSONLibrary
+Library     Collections
+Library     BuiltIn
+
+*** Variables ***
+${base_url}     https://demoqa.com/swagger/#/
+${extended}     BookStore/v1/Book
+${expected_code}    200
+*** Test Cases ***
+Post All Products
+    Create Session      FetchData       ${base_url}
+    ${body}=    create dictionary   userName=Saiprim1    password=S@iprim123
+    ${header}=      create dictionary       content-type=application/json; charset=utf-8
+    ${response}=     post On Session      FetchData       ${extended}    data=${body}    headers=${header}
+    ${actual_code}=      convert to string       ${response.status_code}
+#    log     ${actual_code}
+    should be equal     ${actual_code}          ${expected_code}
+#    log  "${actual_code} is equal to ${expected_code}"
+#    log to console  " ${actual_code} is equal to ${expected_code}"
+    ${actual_body}=   convert to string  ${response.content}
+    should contain   ${actual_body}   User exists!
+    should contain   ${actual_body}   1204
+
+
+

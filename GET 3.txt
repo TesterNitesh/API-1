@@ -1,0 +1,26 @@
+*** Settings ***
+Library      RequestsLibrary
+Library     Collections
+
+*** Variables ***
+${base_url}     https://automationexercise.com
+
+*** Test Cases ***
+GETuseraccountdetailbyemail
+    create session  session1    ${base_url}
+    ${responce}=    get request  session1   api/getUserDetailByEmail
+
+    ${status_code}=     convert to string   ${responce.status_code}
+    should be equal  ${status_code}        200
+
+     ${body}=   convert to string    ${responce.content}
+     should contain     ${body}     Bad request, email parameter is missing in GET request.
+
+     ${contentTypeValue}=   get from dictionary    ${responce.headers}    Content-Type
+     should be equal     ${contentTypeValue}        text/html; charset=utf-8
+
+
+
+
+
+

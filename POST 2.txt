@@ -1,0 +1,36 @@
+*** Settings ***
+Library  RequestsLibrary
+Library  Collections
+
+*** Variables ***
+${base_url}=    https://automationexercise.com/api/productsList
+
+*** Test Cases ***
+POST To All Products List
+    create session  session1    ${base_url}
+    ${body}=    create dictionary   name : Product a   price : 28.99
+    ${header}=  create dictionary  Content-Type=text/html; charset=utf-8
+    ${responce}=    post request  session1   /api/productsList     data=${body}  headers=${header}
+
+#    log to console  ${responce.status_code}
+#    log to console  ${responce.content}
+
+    ${staus_code}=  convert to string   ${responce.status_code}
+    should be equal  ${staus_code}  405
+
+    ${responce_body}=   convert to string  ${responce.content}
+    should contain   ${responce_body}   This request method is not supported.
+
+
+
+
+
+
+
+
+
+
+
+
+
+

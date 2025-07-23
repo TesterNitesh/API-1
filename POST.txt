@@ -1,0 +1,22 @@
+*** Settings ***
+Library    RequestsLibrary
+Library    Collections
+
+*** Variables ***
+${base_url}=   https://automationexercise.com
+
+*** Test Cases ***
+POSToSearchProductwithoutsearch_productparameter.
+    create session  session1    ${base_url}
+    ${BODY}=    create dictionary   id: 1   name: Blue Top
+    ${header}=  create dictionary   Content-Type=text/html; charset=utf-8
+    ${responce}=    post request  session1  api/searchProduct   data=${BODY}    headers=${header}
+
+    log to console  ${responce.status_code}
+    log to console  ${responce.content}
+
+    ${status_code}=    convert to string  ${responce.status_code}
+    should be equal  ${status_code}     400
+
+    ${responce_body}=   convert to string  ${responce.content}
+    should contain   ${responce_body}   Bad request, search_product parameter is missing in POST request.

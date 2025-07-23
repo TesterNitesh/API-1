@@ -1,0 +1,73 @@
+*** Settings ***
+Library    RequestsLibrary
+Library    Collections
+
+*** Variables ***
+${base_url}=   https://automationexercise.com
+
+*** Test Cases ***
+TC1-GET
+    create session  session1    ${base_url}
+    ${responce}=    get request  session1   /api/productsList
+    log to console      ${responce.status_code}
+    log to console      ${responce.content}
+
+     ${status_code}=    convert to string  ${responce.status_code}
+    should be equal  ${status_code}     200
+
+TC2-POST
+    create session  session2    ${base_url}
+    ${BODY}=    create dictionary   "id": 1, "name": "Blue Top", "price": "Rs. 500", "brand": "Polo"
+    ${header}=  create dictionary   Content-Type=text/html; charset=utf-8
+    ${responce}=    post request  session2  /api/productsList   data=${BODY}    headers=${header}
+
+    log to console  ${responce.status_code}
+    log to console  ${responce.content}
+
+    ${status_code}=    convert to string  ${responce.status_code}
+    should be equal  ${status_code}     200
+
+    ${responce_body}=   convert to string  ${responce.content}
+    should contain   ${responce_body}   {"responseCode": 200, "products": [{"id": 1, "name": "Blue Top", "price": "Rs. 500", "brand": "Polo", "category":{"usertype": {"usertype": "Women"}, "category": "Tops"}}, {"id": 2, "name": "Men Tshirt", "price": "Rs. 400", "brand":"H&M", "category": {"usertype": {"usertype": "Men"}, "category": "Tshirts"}}, {"id": 3, "name": "Sleeveless Dress",
+
+TC3-GET2
+    create session  session3    ${base_url}
+    ${responce}=    get request  session1   /api/productsList
+    log to console      ${responce.status_code}
+    log to console      ${responce.content}
+
+     ${status_code}=    convert to string  ${responce.status_code}
+    should be equal  ${status_code}     200
+
+    ${Res_body}=    convert to string   ${responce.content}
+    should contain  ${Res_body}     Blue Top
+
+TC4-PUT
+    create session  session4    ${base_url}
+    ${BODY}=    create dictionary   "id": 1, "name": "ZIGZAC Top", "price": "Rs. 500", "brand": "Polo"
+    ${header}=  create dictionary   Content-Type=text/html; charset=utf-8
+    ${responce}=    put request  session4  /api/productsList/1   data=${BODY}    hraders=${header}
+
+    log to console  ${responce.status_code}
+    log to console  ${responce.content}
+
+    ${status_code}=    convert to string  ${responce.status_code}
+    should be equal  ${status_code}     200
+
+    ${responce_body}=   convert to string  ${responce.content}
+    should contain   ${responce_body}   ZIGZAC Top
+
+TC5-DELETE
+    create session  session5    ${base_url}
+    ${responce}=    delete request  session5    /api/productsList/1
+
+    ${status_code}=    convert to string  ${responce.status_code}
+    should be equal  ${status_code}     200
+
+    ${responce_body}=   convert to string  ${responce.content}
+    should contain   ${responce_body}   This request method is not supported.
+
+
+
+
+
